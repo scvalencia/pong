@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <vector>
 
 struct Vector2D {
     float x, y;
@@ -31,8 +32,8 @@ class Game {
         Vector2D paddlePosition1;
         Vector2D paddlePosition2;
 
-        Vector2D ballPosition;
-        Vector2D ballVelocity;
+        std::vector<Vector2D> ballPositions;
+        std::vector<Vector2D> ballVelocities;
 
         Uint32 ticksCount;
 

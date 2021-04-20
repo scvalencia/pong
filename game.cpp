@@ -1,9 +1,26 @@
+#include <stdlib.h> 
+
 #include "game.hpp"
+#define NUMBER_OF_BALLS 2
 
 const int THICKNESS = 15;
 const float PADDLE_HEIGHT = 100.0f;
 const int WINDOW_WIDTH = 1024;
 const int WINDOW_HEIGHT = 768;
+
+Vector2D randomVelocity() {
+
+	int minBound = rand() % 300 + 1;
+	int maxBound = rand() % 300 + 1;
+
+	minBound = 0 - minBound;
+
+	return {
+		(float) minBound,
+		(float) maxBound
+	};
+
+}
 
 /*
  *
@@ -53,11 +70,21 @@ bool Game::Initialize() {
 	this->paddlePosition2.x = (float) WINDOW_WIDTH - 10.0f;
 	this->paddlePosition2.y = (float) WINDOW_HEIGHT / 2.0f;
 
-	this->ballPosition.x = (float) WINDOW_WIDTH / 2.0f;
-	this->ballPosition.y = (float) WINDOW_HEIGHT / 2.0f;
 	
-	this->ballVelocity.x = -200.0f;
-	this->ballVelocity.y = 235.0f;
+	int spaceBetweenBalls = (int) (WINDOW_HEIGHT / (NUMBER_OF_BALLS + 1));
+	int yBallPosition = spaceBetweenBalls;
+	
+	for(int i = 0; i < NUMBER_OF_BALLS; i++, yBallPosition += spaceBetweenBalls) {
+		Vector2D ballPosition = {
+			(float) WINDOW_WIDTH / 2.0f,
+			(float) yBallPosition
+		};
+
+		this->ballPositions.push_back(ballPosition);
+		this->ballVelocities.push_back(randomVelocity());
+
+	}
+
 
 	return true;
 
@@ -189,8 +216,17 @@ void Game::UpdateGame() {
 	updatePaddlePosition(this->paddleDirection2, deltaTime, this->paddlePosition2);
 	
 	// Update ball position based on ball velocity
-	this->ballPosition.x += this->ballVelocity.x * deltaTime;
-	this->ballPosition.y += this->ballVelocity.y * deltaTime;
+
+	for(int i = 0; i < NUMBER_OF_BALLS; i++) {
+		auto& ballPosition = this->ballPositions[i];
+		auto ballVelocity = this->ballVelocities[i];
+
+		ballPosition.x += ballVelocity.x * deltaTime;
+		ballPosition.y += ballVelocity.y * deltaTime;
+
+	}
+
+	// How does the ball bounce with the walls, paddles and other balls
 	
 }
 
@@ -301,7 +337,9 @@ void Game::GenerateOutput() {
 	renderPaddle(this->renderer, 255, 182, 0, 0, this->paddlePosition2);
 
 	// Draw one ball
-	renderBall(this->renderer, 255, 255, 255, 255, this->ballPosition);
+
+	for(auto ballPosition : this->ballPositions)
+		renderBall(this->renderer, 255, 255, 255, 255, ballPosition);
 
     
 
