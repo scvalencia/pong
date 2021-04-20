@@ -169,6 +169,7 @@ void updatePaddlePosition(int paddleDirection, float deltaTime, Vector2D& paddle
  *
 */
 void Game::UpdateGame() {
+
 	// Wait until 16ms has elapsed since last frame
 	while (!SDL_TICKS_PASSED(SDL_GetTicks(), this->ticksCount + 16))
 		;
@@ -191,6 +192,28 @@ void Game::UpdateGame() {
 	this->ballPosition.x += this->ballVelocity.x * deltaTime;
 	this->ballPosition.y += this->ballVelocity.y * deltaTime;
 	
+}
+
+/*
+ *
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+ *
+ *
+*/
+void renderWall(SDL_Renderer* renderer, int x, int y, int w, int h) {
+
+	SDL_Rect wall;
+
+    wall.x = x;        // Top left x
+    wall.y = y;        // Top left y
+    wall.w = w;        // Width
+    wall.h = h;        // Height
+
+    
+    SDL_RenderFillRect(renderer, &wall);
+
 }
 
 /*
@@ -228,6 +251,31 @@ void renderPaddle(SDL_Renderer* renderer, int r, int g, int b, int a, Vector2D& 
  *
  *
 */
+void renderBall(SDL_Renderer* renderer, int r, int g, int b, int a, Vector2D& ballPosition) {
+
+	SDL_SetRenderDrawColor(renderer, r, g, b, a);
+
+    // Draw ball
+	SDL_Rect ball;
+
+    ball.x = ballPosition.x - (THICKNESS / 2);        // Top left x
+    ball.y = ballPosition.y - (THICKNESS / 2);       	// Top left y
+    ball.w = THICKNESS;                             // Width
+    ball.h = THICKNESS;                             // Height
+
+    
+    SDL_RenderFillRect(renderer, &ball);
+
+}
+
+/*
+ *
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+ *
+ *
+*/
 void Game::GenerateOutput() {
 
     /*
@@ -243,37 +291,19 @@ void Game::GenerateOutput() {
 
     // Draw the entire game scene
 
-    SDL_SetRenderDrawColor(this->renderer, 255, 255, 255, 255);
-
-    // Draw top wall
-	SDL_Rect wall;
-
-    wall.x = 0;
-	wall.y = 0;
-	wall.w = WINDOW_WIDTH;
-	wall.h = THICKNESS;
-	SDL_RenderFillRect(renderer, &wall);
-	
-	// Draw bottom wall
-	wall.y = WINDOW_HEIGHT - THICKNESS;
-	SDL_RenderFillRect(renderer, &wall);
+	// Draw walls, bottom and top
+	SDL_SetRenderDrawColor(this->renderer, 255, 255, 255, 255);
+	renderWall(this->renderer, 0, 0, WINDOW_WIDTH, THICKNESS);
+	renderWall(this->renderer, 0, WINDOW_HEIGHT - THICKNESS, WINDOW_WIDTH, THICKNESS);
 
 	// Draw paddles
 	renderPaddle(this->renderer, 0, 0, 255, 255, this->paddlePosition1);
 	renderPaddle(this->renderer, 255, 182, 0, 0, this->paddlePosition2);
 
-    SDL_SetRenderDrawColor(this->renderer, 255, 255, 255, 255);
-
-    // Draw ball
-	SDL_Rect ball;
-
-    ball.x = this->ballPosition.x - (THICKNESS / 2);        // Top left x
-    ball.y = this->ballPosition.y - (THICKNESS / 2);         // Top left y
-    ball.w = THICKNESS;                                 // Width
-    ball.h = THICKNESS;                                  // Height
+	// Draw one ball
+	renderBall(this->renderer, 255, 255, 255, 255, this->ballPosition);
 
     
-    SDL_RenderFillRect(this->renderer, &ball);
 
     // Swap the front buffer and back buffer
     SDL_RenderPresent(this->renderer);
