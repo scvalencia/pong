@@ -13,7 +13,8 @@ Vector2D randomVelocity() {
 	int minBound = rand() % 300 + 1;
 	int maxBound = rand() % 300 + 1;
 
-	minBound = 0 - minBound;
+	minBound *= rand() & 1 ? 1 : -1;
+	maxBound *= rand() & 1 ? 1 : -1;
 
 	return {
 		(float) minBound,
