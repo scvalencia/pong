@@ -18,7 +18,7 @@ Vector2D randomVelocity() {
 
 	return {
 		(float) minBound,
-		(float) 0
+		(float) maxBound
 	};
 
 }
@@ -211,7 +211,7 @@ void handleBallBounce(int ballIndex, Vector2D& ballVelocity, Vector2D& ballPosit
 
     // Left paddle collition
     if (ballPosition.x < ADJUSTED_THICKNESS
-        && ballPosition.y > paddlePosition1.y && ballPosition.y < (paddlePosition1.y + PADDLE_HEIGHT + THICKNESS)
+        && ballPosition.y > paddlePosition1.y - THICKNESS && ballPosition.y < (paddlePosition1.y + PADDLE_HEIGHT + THICKNESS)
         && ballVelocity.x < 0) {
 
         ballVelocity.x = -ballVelocity.x;
@@ -219,7 +219,7 @@ void handleBallBounce(int ballIndex, Vector2D& ballVelocity, Vector2D& ballPosit
 
     // Right paddle collition
     if (ballPosition.x > WINDOW_WIDTH - ADJUSTED_THICKNESS
-        && ballPosition.y > paddlePosition2.y && ballPosition.y < (paddlePosition2.y + PADDLE_HEIGHT + THICKNESS)
+        && ballPosition.y > paddlePosition2.y - THICKNESS && ballPosition.y < (paddlePosition2.y + PADDLE_HEIGHT + THICKNESS)
         && ballVelocity.x > 0) {
 
         ballVelocity.x = -ballVelocity.x;
