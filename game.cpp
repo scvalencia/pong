@@ -1,7 +1,8 @@
 #include <stdlib.h> 
 
 #include "game.hpp"
-#define NUMBER_OF_BALLS 5
+
+
 
 const int THICKNESS = 15;
 const float PADDLE_HEIGHT = 100.0f;
@@ -72,10 +73,11 @@ bool Game::Initialize() {
 	this->paddlePosition2.y = (float) WINDOW_HEIGHT / 2.0f;
 
 	
-	int spaceBetweenBalls = (int) (WINDOW_HEIGHT / (NUMBER_OF_BALLS + 1));
+	int spaceBetweenBalls = (int) (WINDOW_HEIGHT / (this->numberOfBalls + 1));
 	int yBallPosition = spaceBetweenBalls;
 	
-	for(int i = 0; i < NUMBER_OF_BALLS; i++, yBallPosition += spaceBetweenBalls) {
+	for(int i = 0; i < this->numberOfBalls; i++, yBallPosition += spaceBetweenBalls) {
+		
 		Vector2D ballPosition = {
 			(float) WINDOW_WIDTH / 2.0f,
 			(float) yBallPosition
@@ -196,7 +198,7 @@ void updatePaddlePosition(int paddleDirection, float deltaTime, Vector2D& paddle
  *
  *
 */
-void handleBallBounce(int ballIndex, Vector2D& ballVelocity, Vector2D& ballPosition, Vector2D& paddlePosition1, Vector2D& paddlePosition2, std::vector<Vector2D>& ballPositions) {
+void handleBallBounce(int ballIndex, Vector2D& ballVelocity, Vector2D& ballPosition, Vector2D& paddlePosition1, Vector2D& paddlePosition2, std::vector<Vector2D>& ballPositions, int numberOfBalls) {
     int ADJUSTED_THICKNESS = THICKNESS*3/2;
 
     // Top collition
@@ -226,7 +228,7 @@ void handleBallBounce(int ballIndex, Vector2D& ballVelocity, Vector2D& ballPosit
     }
 
     // Balls collition
-    for (int i = 0; i < NUMBER_OF_BALLS; i++) {
+    for (int i = 0; i < numberOfBalls; i++) {
 
         auto& otherBallPosition = ballPositions[i];
 
@@ -285,22 +287,35 @@ void Game::UpdateGame() {
 	
 	// Update ball position based on ball velocity
 
-	for(int i = 0; i < NUMBER_OF_BALLS; i++) {
+	for(int i = 0; i < this->numberOfBalls; i++) {
 		auto& ballPosition = this->ballPositions[i];
 		auto ballVelocity = this->ballVelocities[i];
 
 		ballPosition.x += ballVelocity.x * deltaTime;
 		ballPosition.y += ballVelocity.y * deltaTime;
 
+        if(ballPosition.x <= 0) {
+            this->currentBalls--;
+        }
+
+        if(ballPosition.x >= WINDOW_WIDTH) {
+            this->currentBalls--;
+        }
+
 	}
 
 	// How does the ball bounce with the walls, paddles and other balls
-    for (int i = 0; i < NUMBER_OF_BALLS; i++) {
+
+    for (int i = 0; i < this->numberOfBalls; i++) {
         auto& ballPosition = this->ballPositions[i];
         auto& ballVelocity = this->ballVelocities[i];
 
-        handleBallBounce(i, ballVelocity, ballPosition, this->paddlePosition1, this->paddlePosition2, this->ballPositions);
+        handleBallBounce(i, ballVelocity, ballPosition, this->paddlePosition1, this->paddlePosition2, this->ballPositions, this->numberOfBalls);
     }
+
+    if(this->currentBalls == 0)
+        isRunning = false;
+
 	
 }
 /*
@@ -344,7 +359,7 @@ void renderPaddle(SDL_Renderer* renderer, int r, int g, int b, int a, Vector2D& 
     // x - (width / 2) and y - (height / 2)
 
     paddle.x = paddlePosition.x - (THICKNESS / 2);      // Top left x
-    paddle.y = paddlePosition.y - (70 / 2);            	// Top left y
+    paddle.y = paddlePosition.y - (PADDLE_HEIGHT / 2);            	// Top left y
     paddle.w = THICKNESS;                               // Width
     paddle.h = PADDLE_HEIGHT; 
 
@@ -413,8 +428,6 @@ void Game::GenerateOutput() {
 
 	for(auto ballPosition : this->ballPositions)
 		renderBall(this->renderer, 255, 255, 255, 255, ballPosition);
-
-    
 
     // Swap the front buffer and back buffer
     SDL_RenderPresent(this->renderer);
