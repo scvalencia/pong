@@ -7,10 +7,12 @@ struct Vector2D {
 
 class Game {
     public:
-        Game() : 
+        Game(int _currentBalls) : 
             window(nullptr), 
             renderer(nullptr), 
-            ticksCount(0), 
+            ticksCount(0),
+            currentBalls(_currentBalls),
+            numberOfBalls(_currentBalls),
             isRunning(true), 
             paddleDirection1(0), 
             paddleDirection2(0) 
@@ -28,6 +30,9 @@ class Game {
         SDL_Renderer* renderer;
         SDL_Window* window;
         bool isRunning;
+
+        int currentBalls;
+        int numberOfBalls;
 
         Uint32 ticksCount;
 

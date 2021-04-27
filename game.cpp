@@ -1,7 +1,6 @@
 #include <stdlib.h> 
 
 #include "game.hpp"
-#define NUMBER_OF_BALLS 1
 
 const int THICKNESS = 15;
 const float PADDLE_HEIGHT = 100.0f;
@@ -72,10 +71,10 @@ bool Game::Initialize() {
 	this->paddlePosition2.y = (float) WINDOW_HEIGHT / 2.0f;
 
 	
-	int spaceBetweenBalls = (int) (WINDOW_HEIGHT / (NUMBER_OF_BALLS + 1));
+	int spaceBetweenBalls = (int) (WINDOW_HEIGHT / (this->numberOfBalls + 1));
 	int yBallPosition = spaceBetweenBalls;
 	
-	for(int i = 0; i < NUMBER_OF_BALLS; i++, yBallPosition += spaceBetweenBalls) {
+	for(int i = 0; i < this->numberOfBalls; i++, yBallPosition += spaceBetweenBalls) {
 		
 		Vector2D ballPosition = {
 			(float) WINDOW_WIDTH / 2.0f,
@@ -219,16 +218,27 @@ void Game::UpdateGame() {
 	
 	// Update ball position based on ball velocity
 
-	for(int i = 0; i < NUMBER_OF_BALLS; i++) {
+	for(int i = 0; i < this->numberOfBalls; i++) {
 		auto& ballPosition = this->ballPositions[i];
 		auto ballVelocity = this->ballVelocities[i];
 
 		ballPosition.x += ballVelocity.x * deltaTime;
 		ballPosition.y += ballVelocity.y * deltaTime;
 
+        if(ballPosition.x <= 0) {
+            this->currentBalls--;
+        }
+
+        if(ballPosition.x >= WINDOW_WIDTH) {
+            this->currentBalls--;
+        }
+
 	}
 
 	// How does the ball bounce with the walls, paddles and other balls
+
+    if(this->currentBalls == 0)
+        isRunning = false;
 	
 }
 
