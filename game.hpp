@@ -29,14 +29,15 @@ class Game {
         SDL_Window* window;
         bool isRunning;
 
+        Uint32 ticksCount;
+
         Vector2D paddlePosition1;
         Vector2D paddlePosition2;
 
-        std::vector<Vector2D> ballPositions;
-        std::vector<Vector2D> ballVelocities;
-
-        Uint32 ticksCount;
-
         int paddleDirection1;
         int paddleDirection2;
+
+        std::vector<Vector2D> ballPositions;
+        std::vector<Vector2D> ballVelocities;
+        
 };

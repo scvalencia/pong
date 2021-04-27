@@ -1,7 +1,7 @@
 #include <stdlib.h> 
 
 #include "game.hpp"
-#define NUMBER_OF_BALLS 2
+#define NUMBER_OF_BALLS 1
 
 const int THICKNESS = 15;
 const float PADDLE_HEIGHT = 100.0f;
@@ -76,6 +76,7 @@ bool Game::Initialize() {
 	int yBallPosition = spaceBetweenBalls;
 	
 	for(int i = 0; i < NUMBER_OF_BALLS; i++, yBallPosition += spaceBetweenBalls) {
+		
 		Vector2D ballPosition = {
 			(float) WINDOW_WIDTH / 2.0f,
 			(float) yBallPosition
