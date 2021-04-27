@@ -283,7 +283,7 @@ void renderPaddle(SDL_Renderer* renderer, int r, int g, int b, int a, Vector2D& 
     // x - (width / 2) and y - (height / 2)
 
     paddle.x = paddlePosition.x - (THICKNESS / 2);      // Top left x
-    paddle.y = paddlePosition.y - (70 / 2);            	// Top left y
+    paddle.y = paddlePosition.y - (PADDLE_HEIGHT / 2);            	// Top left y
     paddle.w = THICKNESS;                               // Width
     paddle.h = PADDLE_HEIGHT; 
 
@@ -352,8 +352,6 @@ void Game::GenerateOutput() {
 
 	for(auto ballPosition : this->ballPositions)
 		renderBall(this->renderer, 255, 255, 255, 255, ballPosition);
-
-    
 
     // Swap the front buffer and back buffer
     SDL_RenderPresent(this->renderer);
