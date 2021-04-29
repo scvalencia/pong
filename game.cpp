@@ -7,6 +7,14 @@ const float PADDLE_HEIGHT = 100.0f;
 const int WINDOW_WIDTH = 1024;
 const int WINDOW_HEIGHT = 768;
 
+/*
+ *
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+ *
+ *
+*/
 Vector2D randomVelocity() {
 
 	int minBound = rand() % 300 + 1;
@@ -218,7 +226,7 @@ void Game::UpdateGame() {
 	
 	// Update ball position based on ball velocity
 
-	for(int i = 0; i < this->numberOfBalls; i++) {
+	for(int i = 0; i < this->currentBalls; i++) {
 		auto& ballPosition = this->ballPositions[i];
 		auto ballVelocity = this->ballVelocities[i];
 
@@ -227,10 +235,14 @@ void Game::UpdateGame() {
 
         if(ballPosition.x <= 0) {
             this->currentBalls--;
+            this->ballPositions.erase(this->ballPositions.begin() + i);
+            this->ballVelocities.erase(this->ballVelocities.begin() + i);
         }
 
         if(ballPosition.x >= WINDOW_WIDTH) {
             this->currentBalls--;
+            this->ballPositions.erase(this->ballPositions.begin() + i);
+            this->ballVelocities.erase(this->ballVelocities.begin() + i);
         }
 
 	}
